@@ -19,8 +19,8 @@ def s3_connection():
         s3 = boto3.client(
             service_name="s3",
             region_name="ap-northeast-2",
-            aws_access_key_id="AKIAS5XD4RHI7ZXHKO7C",
-            aws_secret_access_key="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",
+            aws_access_key_id="", # S3 KEY
+            aws_secret_access_key="", # S3 Secret KEY 
         )
     except Exception as e:
         print(e)
@@ -129,7 +129,8 @@ def plain():
         cv2.imwrite("./images/plain/" + plainImage, image)
 
         try:
-            s3.upload_file("./images/plain/" + plainImage ,"blossom-cloud", "images/" + plainImage)
+            # 로컬 파일 , S3 버킷 이름 , 저장될 파일 경로 및 이름
+            s3.upload_file("./images/plain/" + plainImage ,"", "images/" + plainImage)
         except Exception as e:
             print(e)
         response = {"plainImage" : plainImage}
