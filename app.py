@@ -56,7 +56,7 @@ def plain():
     
     # 얼굴 및 눈썹 검출을 위한 Dlib 초기화
     detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor("./images/shape_predictor_68_face_landmarks.dat")
+    predictor = dlib.shape_predictor("./shape_predictor_68_face_landmarks.dat")
 
 
     image = cv2.imread('./images/' + imageName)
@@ -140,7 +140,7 @@ def plain():
 def synthetic():
     
     # 합성할 민무늬 이미지 이름
-    imageName = request.json['imageName']
+    imageName = request.json['imageName'] 
     # 합성할 눈썹 이미지 이름
     eyebrowImage = request.json["eyebrowImage"]
     # 눈썹 색상
@@ -153,16 +153,17 @@ def synthetic():
     
     # 얼굴 및 눈썹 검출을 위한 dlib 초기화
     detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor("./images/shape_predictor_68_face_landmarks.dat")
+    predictor = dlib.shape_predictor("./shape_predictor_68_face_landmarks.dat")
 
     # 얼굴 이미지와 눈썹 이미지 로드
     face_image = cv2.imread("./images/plain/" + imageName)
     # eyebrow_image = cv2.imread("./images/eyebrow.png", cv2.IMREAD_UNCHANGED)
-    eyebrow_image = cv2.imread("./images/" + eyebrowImage, cv2.IMREAD_UNCHANGED)
+    eyebrow_image = cv2.imread("./images/eyebrow/" + eyebrowImage, cv2.IMREAD_UNCHANGED)
     
     # 얼굴 색상 변경
-    eyebrow_image[:, :, :3] = rgb_color
-
+    # eyebrow_image[:, :, :3] = rgb_color RGB가 반대입니다.
+    eyebrow_image[:, :, :3] = (rgb_color[2],rgb_color[1],rgb_color[0])
+    
     # 얼굴 이미지를 그레이스케일로 변환
     gray_face = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
 
@@ -174,7 +175,7 @@ def synthetic():
         # 눈썹 영역 추출 (랜드마크의 좌표를 사용)
         left_eyebrow_points = np.array([(landmarks.part(i).x, landmarks.part(i).y) for i in range(17, 27)])
 
-        # 눈썹 이미지 크기 조정
+        # 눈썹 이미지 크기 조정!
         eyebrow_height, eyebrow_width, _ = eyebrow_image.shape
         left_eyebrow_width = left_eyebrow_points[-1, 0] - left_eyebrow_points[0, 0] 
         scale_factor = left_eyebrow_width / eyebrow_width
